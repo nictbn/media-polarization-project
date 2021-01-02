@@ -1,5 +1,6 @@
 globals [
- num-turtles
+  num-turtles
+  feature-count
 ]
 
 turtles-own [
@@ -9,23 +10,29 @@ turtles-own [
 
 to setup
   clear-all
-
   resize-world -10 10 -10 10
-
   set-default-shape turtles "square"
 
   set-globals
+  spawn-turtles
+  initialize-turtles
+  color-turtles
 
+  reset-ticks
+end
+
+to set-globals
+  set num-turtles 441
+  set feature-count 5
+end
+
+to spawn-turtles
   ask n-of num-turtles patches [ sprout 1 ]
+end
 
+to color-turtles
   ask turtles [
-    set culture n-values 5 [1 + random 10]
-
-    let sum-total reduce + culture
-    set avg-culture sum-total / 5
-    ;show culture
-    ;show avg-culture
-    ifelse avg-culture <= 5
+     ifelse avg-culture <= 5
     [
       set color scale-color red avg-culture 0 5
     ]
@@ -34,11 +41,17 @@ to setup
       set color scale-color blue good-color 0 5
     ]
   ]
-  reset-ticks
 end
 
-to set-globals
-  set num-turtles 441
+to initialize-turtles
+  ask turtles [
+    set culture n-values feature-count [1 + random 10]
+
+    let sum-total reduce + culture
+    set avg-culture sum-total /
+    ;show culture
+    ;show avg-culture
+  ]
 end
 
 to go
@@ -55,18 +68,18 @@ to go
       let new-value (my-value + neighbor-value) / 2
       set culture replace-item random-option culture new-value
 
-          let sum-total reduce + culture
-    set avg-culture sum-total / 5
-    ;show culture
-    ;show avg-culture
-    ifelse avg-culture <= 5
-    [
-      set color scale-color red avg-culture 0 5
-    ]
-    [
-      let good-color 11 - avg-culture
-      set color scale-color blue good-color 0 5
-    ]
+      let sum-total reduce + culture
+      set avg-culture sum-total / 5
+      ;show culture
+      ;show avg-culture
+      ifelse avg-culture <= 5
+      [
+        set color scale-color red avg-culture 0 5
+      ]
+      [
+        let good-color 11 - avg-culture
+        set color scale-color blue good-color 0 5
+      ]
     ]
   ]
   tick
@@ -153,7 +166,7 @@ neighborly-interactions
 neighborly-interactions
 0
 441
-101.0
+441.0
 1
 1
 NIL
