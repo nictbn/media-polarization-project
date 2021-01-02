@@ -1,6 +1,7 @@
 globals [
   num-turtles
   feature-count
+  missed-interactions
 ]
 
 turtles-own [
@@ -24,6 +25,7 @@ end
 to set-globals
   set num-turtles 441
   set feature-count 5
+  set missed-interactions 0
 end
 
 to spawn-turtles
@@ -70,23 +72,41 @@ to go
     ask n-of neighborly-interactions turtles [
       let all-neighbors turtles-on neighbors
       let random-neighbor one-of all-neighbors
-      ;show [culture] of random-neighbor
-      ;show [avg-culture] of random-neighbor
-      let random-option random feature-count
-      let my-value item random-option culture
-      let neighbor-value item random-option [culture] of random-neighbor
-      let new-value (my-value + neighbor-value) / 2
-      set culture replace-item random-option culture new-value
-
-      let sum-total reduce + culture
-      set avg-culture sum-total / feature-count
-      ;show culture
-      ;show avg-culture
-
+      interact-with-neighbor random-neighbor
       color-single-turtle
     ]
   ]
   tick
+end
+
+to interact-with-neighbor [the-neighbor]
+  let similarity compute-similarity the-neighbor
+  let random-probability random-float 3
+  ifelse random-probability < similarity
+  [
+    let random-option random feature-count
+    let my-value item random-option culture
+    let neighbor-value item random-option [culture] of the-neighbor
+    let new-value (my-value + neighbor-value) / 2
+    set culture replace-item random-option culture new-value
+    let sum-total reduce + culture
+    set avg-culture sum-total / feature-count
+  ]
+
+end
+
+to-report compute-similarity [the-neighbor]
+  let current-feature 0
+  let sum-of-absolute-differences 0
+  while [current-feature < feature-count] [
+    let my-feature item current-feature culture
+    let neighbor-feature item current-feature [culture] of the-neighbor
+    let absolute-difference abs (my-feature - neighbor-feature)
+    set sum-of-absolute-differences (sum-of-absolute-differences + absolute-difference)
+    set current-feature current-feature + 1
+  ]
+  let result 1 - sum-of-absolute-differences / (9 * feature-count)
+  report result
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
