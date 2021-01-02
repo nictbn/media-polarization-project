@@ -43,12 +43,22 @@ to color-turtles
   ]
 end
 
+to color-single-turtle
+    ifelse avg-culture <= 5
+    [
+      set color scale-color red avg-culture 0 5
+    ]
+    [
+      let good-color 11 - avg-culture
+      set color scale-color blue good-color 0 5
+    ]
+end
 to initialize-turtles
   ask turtles [
     set culture n-values feature-count [1 + random 10]
 
     let sum-total reduce + culture
-    set avg-culture sum-total /
+    set avg-culture sum-total / feature-count
     ;show culture
     ;show avg-culture
   ]
@@ -62,24 +72,18 @@ to go
       let random-neighbor one-of all-neighbors
       ;show [culture] of random-neighbor
       ;show [avg-culture] of random-neighbor
-      let random-option random 5
+      let random-option random feature-count
       let my-value item random-option culture
       let neighbor-value item random-option [culture] of random-neighbor
       let new-value (my-value + neighbor-value) / 2
       set culture replace-item random-option culture new-value
 
       let sum-total reduce + culture
-      set avg-culture sum-total / 5
+      set avg-culture sum-total / feature-count
       ;show culture
       ;show avg-culture
-      ifelse avg-culture <= 5
-      [
-        set color scale-color red avg-culture 0 5
-      ]
-      [
-        let good-color 11 - avg-culture
-        set color scale-color blue good-color 0 5
-      ]
+
+      color-single-turtle
     ]
   ]
   tick
@@ -166,7 +170,7 @@ neighborly-interactions
 neighborly-interactions
 0
 441
-441.0
+30.0
 1
 1
 NIL
