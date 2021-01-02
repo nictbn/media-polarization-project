@@ -53,6 +53,7 @@ to color-single-turtle
       set color scale-color blue good-color 0 5
     ]
 end
+
 to initialize-turtles
   ask turtles [
     set culture n-values feature-count [1 + random 10]
@@ -74,12 +75,52 @@ to go
       color-single-turtle
     ]
   ]
+
+  if use-polarized-media
+  [
+    if (ticks mod media-coverage-interval) = 0
+    [
+      let left-extreme n-values feature-count [1]
+      let right-extreme n-values feature-count [10]
+      ask n-of 44 turtles
+      [
+        let left-extreme-similarity similarity-to-extreme left-extreme
+        let right-extreme-similarity similarity-to-extreme right-extreme
+        let interaction-probability random-float 1
+        ifelse left-extreme-similarity > right-extreme-similarity
+        [
+          if interaction-probability < left-extreme-similarity [
+            let random-feature random feature-count
+            let my-value item random-feature culture
+            let neighbor-value item random-feature left-extreme
+            let new-value (my-value + neighbor-value) / 2
+            set culture replace-item random-feature culture new-value
+            let sum-total reduce + culture
+            set avg-culture sum-total / feature-count
+          ]
+        ]
+        [
+          if interaction-probability < right-extreme-similarity
+          [
+            let random-feature random feature-count
+            let my-value item random-feature culture
+            let neighbor-value item random-feature right-extreme
+            let new-value (my-value + neighbor-value) / 2
+            set culture replace-item random-feature culture new-value
+            let sum-total reduce + culture
+            set avg-culture sum-total / feature-count
+          ]
+        ]
+        color-single-turtle
+      ]
+    ]
+  ]
   tick
 end
 
 to interact-with-neighbor [the-neighbor]
   let similarity compute-similarity the-neighbor
-  let random-probability random-float 3
+  let random-probability random-float 1
   if random-probability < similarity
   [
     let random-option random feature-count
@@ -98,6 +139,20 @@ to-report compute-similarity [the-neighbor]
   while [current-feature < feature-count] [
     let my-feature item current-feature culture
     let neighbor-feature item current-feature [culture] of the-neighbor
+    let absolute-difference abs (my-feature - neighbor-feature)
+    set sum-of-absolute-differences (sum-of-absolute-differences + absolute-difference)
+    set current-feature current-feature + 1
+  ]
+  let result 1 - sum-of-absolute-differences / (9 * feature-count)
+  report result
+end
+
+to-report similarity-to-extreme [extremist-media]
+  let current-feature 0
+  let sum-of-absolute-differences 0
+  while [current-feature < feature-count] [
+    let my-feature item current-feature culture
+    let neighbor-feature item current-feature extremist-media
     let absolute-difference abs (my-feature - neighbor-feature)
     set sum-of-absolute-differences (sum-of-absolute-differences + absolute-difference)
     set current-feature current-feature + 1
@@ -169,9 +224,9 @@ NIL
 
 SWITCH
 0
-120
+64
 197
-153
+97
 use-neighbor-interactions
 use-neighbor-interactions
 0
@@ -179,15 +234,41 @@ use-neighbor-interactions
 -1000
 
 SLIDER
-1
-77
-178
-110
+0
+107
+177
+140
 neighborly-interactions
 neighborly-interactions
 0
 441
-30.0
+441.0
+1
+1
+NIL
+HORIZONTAL
+
+SWITCH
+0
+162
+166
+195
+use-polarized-media
+use-polarized-media
+0
+1
+-1000
+
+SLIDER
+0
+205
+185
+238
+media-coverage-interval
+media-coverage-interval
+1
+200
+3.0
 1
 1
 NIL
