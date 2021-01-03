@@ -115,6 +115,39 @@ to go
       ]
     ]
   ]
+
+  if use-town-hall-meetings
+  [
+    if (ticks mod town-hall-meeting-interval) = 0
+    [
+      let random-patch one-of patches
+      let town-hall-patches 0
+      ask random-patch
+      [
+        set town-hall-patches patches in-radius meeting-radius
+      ]
+      let participants turtles-on town-hall-patches
+      let average-joe n-values feature-count [0]
+      let number-of-participants count participants
+      let current-feature 0
+      while [current-feature < feature-count] [
+        let feature-sum sum [item current-feature culture] of participants
+        ;show feature-sum
+        set average-joe replace-item current-feature average-joe (feature-sum / number-of-participants)
+        set current-feature current-feature + 1
+      ]
+      ;show average-joe
+      ask participants [
+        let random-feature random feature-count
+        let joes-feature item random-feature average-joe
+        let my-feature item random-feature culture
+        set culture replace-item random-feature culture ((joes-feature + my-feature) / 2)
+        let sum-total reduce + culture
+        set avg-culture sum-total / feature-count
+        color-single-turtle
+      ]
+    ]
+  ]
   tick
 end
 
@@ -229,7 +262,7 @@ SWITCH
 97
 use-neighbor-interactions
 use-neighbor-interactions
-0
+1
 1
 -1000
 
@@ -255,7 +288,7 @@ SWITCH
 195
 use-polarized-media
 use-polarized-media
-0
+1
 1
 -1000
 
@@ -267,7 +300,48 @@ SLIDER
 media-coverage-interval
 media-coverage-interval
 1
-200
+50
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+SWITCH
+0
+250
+185
+283
+use-town-hall-meetings
+use-town-hall-meetings
+0
+1
+-1000
+
+SLIDER
+0
+293
+195
+326
+town-hall-meeting-interval
+town-hall-meeting-interval
+1
+50
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+0
+331
+172
+364
+meeting-radius
+meeting-radius
+1
+11
 3.0
 1
 1
