@@ -17,7 +17,7 @@ to setup
   spawn-turtles
   initialize-turtles
   color-turtles
-
+  histogram [round avg-culture] of turtles
   reset-ticks
 end
 
@@ -148,6 +148,7 @@ to go
       ]
     ]
   ]
+  histogram [round avg-culture] of turtles
   tick
 end
 
@@ -275,7 +276,7 @@ neighborly-interactions
 neighborly-interactions
 0
 441
-441.0
+6.0
 1
 1
 NIL
@@ -288,7 +289,7 @@ SWITCH
 195
 use-polarized-media
 use-polarized-media
-1
+0
 1
 -1000
 
@@ -347,6 +348,24 @@ meeting-radius
 1
 NIL
 HORIZONTAL
+
+PLOT
+580
+63
+780
+213
+Political Beliefs Distribution
+Left - Right Leaning
+Number of Individuals
+1.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"pen-0" 1.0 1 -7500403 true "" ""
 
 @#$#@#$#@
 ## WHAT IS IT?

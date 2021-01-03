@@ -17,7 +17,7 @@ to setup
   spawn-turtles
   initialize-turtles
   color-turtles
-
+  histogram [round avg-culture] of turtles
   reset-ticks
 end
 
@@ -142,11 +142,13 @@ to go
         let joes-feature item random-feature average-joe
         let my-feature item random-feature culture
         set culture replace-item random-feature culture ((joes-feature + my-feature) / 2)
-
+        let sum-total reduce + culture
+        set avg-culture sum-total / feature-count
         color-single-turtle
       ]
     ]
   ]
+  histogram [round avg-culture] of turtles
   tick
 end
 
@@ -261,7 +263,7 @@ SWITCH
 97
 use-neighbor-interactions
 use-neighbor-interactions
-1
+0
 1
 -1000
 
@@ -274,7 +276,7 @@ neighborly-interactions
 neighborly-interactions
 0
 441
-441.0
+147.0
 1
 1
 NIL
@@ -300,7 +302,7 @@ media-coverage-interval
 media-coverage-interval
 1
 50
-1.0
+10.0
 1
 1
 NIL
@@ -341,11 +343,29 @@ meeting-radius
 meeting-radius
 1
 11
-3.0
+4.0
 1
 1
 NIL
 HORIZONTAL
+
+PLOT
+580
+63
+780
+213
+Political Beliefs Distribution
+Left - Right Leaning
+Number of Individuals
+1.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"pen-0" 1.0 1 -7500403 true "" ""
 
 @#$#@#$#@
 ## WHAT IS IT?
